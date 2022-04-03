@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PProxy", "PProxy\PProxy.csproj", "{575777BF-6BBE-4739-AC20-987314390524}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{575777BF-6BBE-4739-AC20-987314390524}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{575777BF-6BBE-4739-AC20-987314390524}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{575777BF-6BBE-4739-AC20-987314390524}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{575777BF-6BBE-4739-AC20-987314390524}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E987F216-8FE6-4D11-A214-49067A7EA981}
+	EndGlobalSection
+EndGlobal
