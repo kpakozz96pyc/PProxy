@@ -10,6 +10,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSingleton<HttpClient>(new HttpClient());
+
 // Add services to the container.
 
 builder.Services.AddControllers();

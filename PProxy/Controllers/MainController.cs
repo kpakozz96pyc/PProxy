@@ -12,9 +12,9 @@ namespace pProxy.Controllers
         private readonly string _baseUrl;
         private readonly HttpClient _httpClient;
 
-        public MainController()
+        public MainController(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient;
             var env = Environment.GetEnvironmentVariable(PAPI_URL_NAME);
             _baseUrl = env !=null? env : "https://form.hcresort.ru/api";
         }
@@ -55,7 +55,6 @@ namespace pProxy.Controllers
                 using (var streamContent = new StreamContent(Request.Body))
                 {
                     request.Content = streamContent;
-
 
                     var header = Request.Headers.FirstOrDefault(h => h.Key.ToLowerInvariant() == "Auth".ToLowerInvariant()).Value.ToString();
                     if (!string.IsNullOrEmpty(header))
