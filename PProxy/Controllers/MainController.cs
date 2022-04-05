@@ -10,11 +10,13 @@ namespace pProxy.Controllers
         private const string PAPI_URL_NAME = "PAPI_URL";
 
         private readonly string _baseUrl;
+        private readonly HttpClient _httpClient;
 
         public MainController()
         {
+            _httpClient = new HttpClient();
             var env = Environment.GetEnvironmentVariable(PAPI_URL_NAME);
-            _baseUrl = env !=null? env : "https://form.hcresort.ru";
+            _baseUrl = env !=null? env : "https://form.hcresort.ru/api";
         }
 
         [HttpGet("/config")]
@@ -23,36 +25,13 @@ namespace pProxy.Controllers
             return "config: "+ _baseUrl;
         }
 
-
-        [HttpPost("/auth")]
-        public async Task Auth()
+        [HttpGet("/api/{**catchAll}")]
+        public async Task CatchAllGet(string catchAll)
         {
-            using (var streamContent = new StreamContent(Request.Body))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/" + catchAll))
             {
-
-                var _httpClient = new HttpClient();
-                var response = await _httpClient.PostAsync(_baseUrl + "/api/auth", streamContent);
-                var content = await response.Content.ReadAsStringAsync();
-
-                Response.StatusCode = (int)response.StatusCode;
-
-                Response.ContentType = response.Content.Headers.ContentType?.ToString();
-                Response.ContentLength = response.Content.Headers.ContentLength;
-
-                await Response.WriteAsync(content);
-            }
-        }
-
-        [HttpGet("/items")]
-        public async Task Items()
-        {
-            var _httpClient = new HttpClient();
-
-            using (var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/api/items"))
-            {
-
                 var header = Request.Headers.FirstOrDefault(h => h.Key.ToLowerInvariant() == "Auth".ToLowerInvariant()).Value.ToString();
-                if (header != null)
+                if (!string.IsNullOrEmpty(header))
                 {
                     request.Headers.Add("Auth", header);
                 }
@@ -66,7 +45,34 @@ namespace pProxy.Controllers
 
                 await Response.WriteAsync(content);
             }
+        }
 
+        [HttpPost("/api/{**catchAll}")]
+        public async Task CatchAllPost(string catchAll)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Post, _baseUrl + "/" + catchAll))
+            {
+                using (var streamContent = new StreamContent(Request.Body))
+                {
+                    request.Content = streamContent;
+
+
+                    var header = Request.Headers.FirstOrDefault(h => h.Key.ToLowerInvariant() == "Auth".ToLowerInvariant()).Value.ToString();
+                    if (!string.IsNullOrEmpty(header))
+                    {
+                        request.Headers.Add("Auth", header);
+                    }
+
+                    var response = await _httpClient.SendAsync(request);
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    Response.StatusCode = (int)response.StatusCode;
+                    Response.ContentType = response.Content.Headers.ContentType.ToString();
+                    Response.ContentLength = response.Content.Headers.ContentLength;
+
+                    await Response.WriteAsync(content);
+                }
+            }
         }
 
     }
