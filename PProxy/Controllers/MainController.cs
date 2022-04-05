@@ -6,10 +6,21 @@ namespace pProxy.Controllers
     [Route("[controller]")]
     public class MainController : ControllerBase
     {
-        [HttpGet("/test")]
-        public string Test()
+
+        private const string PAPI_URL_NAME = "PAPI_URL";
+
+        private readonly string _baseUrl;
+
+        public MainController()
         {
-            return "test";
+            var env = Environment.GetEnvironmentVariable(PAPI_URL_NAME);
+            _baseUrl = env !=null? env : "https://form.hcresort.ru";
+        }
+
+        [HttpGet("/config")]
+        public string Config()
+        {
+            return "config: "+ _baseUrl;
         }
 
 
@@ -20,7 +31,7 @@ namespace pProxy.Controllers
             {
 
                 var _httpClient = new HttpClient();
-                var response = await _httpClient.PostAsync("https://form.hcresort.ru/api/auth", streamContent);
+                var response = await _httpClient.PostAsync(_baseUrl + "/api/auth", streamContent);
                 var content = await response.Content.ReadAsStringAsync();
 
                 Response.StatusCode = (int)response.StatusCode;
@@ -37,7 +48,7 @@ namespace pProxy.Controllers
         {
             var _httpClient = new HttpClient();
 
-            using (var request = new HttpRequestMessage(HttpMethod.Get, "https://form.hcresort.ru/api/items"))
+            using (var request = new HttpRequestMessage(HttpMethod.Get, _baseUrl + "/api/items"))
             {
 
                 var header = Request.Headers.FirstOrDefault(h => h.Key.ToLowerInvariant() == "Auth".ToLowerInvariant()).Value.ToString();
